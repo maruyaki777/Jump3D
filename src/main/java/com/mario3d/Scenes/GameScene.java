@@ -92,7 +92,11 @@ public class GameScene implements Scene, KeyAction{
     public static int getTime() {return time;}
     public static void resetCourseid() {courseid = 0;}
     public static int getCourseid() {return courseid;}
-    public static void clearCurrentCourse() {if (nextscene == null) courseid++;nextscene = GameManager.scene_slot[2];}
+    public static void clearCurrentCourse() {
+        if (nextscene == null) courseid++;
+        if (CourseSelector.existWorld(courseid)) nextscene = GameManager.scene_slot[2];
+        else {nextscene = GameManager.scene_slot[3];GameManager.mk.dounlock();}
+    }
 
     public enum State {
         GAME(0),

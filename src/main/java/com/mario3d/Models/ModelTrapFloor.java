@@ -28,19 +28,25 @@ public class ModelTrapFloor implements Model{
     };
 
     private final int[][] tex;
+    private final int x_floor;
 
     private TrapFloor entity;
     private TF_tex type;
-    public ModelTrapFloor(TrapFloor entity) {
+    public ModelTrapFloor(TrapFloor entity, int[] tag) {
         this.entity = entity;
-        this.needCube = entity.tag[0] * entity.tag[1];
-        switch (entity.tag[2]) {
+        this.needCube = tag[0] * tag[1];
+        x_floor = tag[0];
+        switch (tag[2]) {
             case 0: {
                 type = TF_tex.Grass;
                 break;
             }
             case 1: {
                 type = TF_tex.Dirt;
+                break;
+            }
+            case 2: {
+                type = TF_tex.Brick;
                 break;
             }
         }
@@ -60,6 +66,7 @@ public class ModelTrapFloor implements Model{
     @Override
     public Aspect setAspect() {return aspect0;}
 
+    private int ti;
     private int fi;
     @Override
     public int getCubeCount() {
@@ -67,20 +74,34 @@ public class ModelTrapFloor implements Model{
         return needCube;
     }
     @Override
-    public void nextCube() {}
+    public void nextCube() {
+        ti = 0;
+        fi++;
+        currentbasepos[0] = (fi % x_floor) + entity.BasePos.x;
+        currentbasepos[1] = (fi / x_floor) + entity.BasePos.z;
+    }
+    private double[] currentbasepos = new double[2];
     @Override
     public Texture modelTex() {return type.texture;}
     @Override
-    public int[][] nextFaceTexCut() {return null;}
+    public int[][] nextFaceTexCut() {return tex;}
 
+    private double[][] result = new double[4][];
     @Override
     public double[][] nextFacePos() {
-        return null;
+        for (int i = 0;i < result.length;i++) {
+            result[i] = corners[face[ti][i]].clone();
+            result[i][0] += currentbasepos[0];
+            result[i][2] += currentbasepos[1];
+        }
+        ti++;
+        return result;
     }
 
     private enum TF_tex {
         Grass("grass"),
-        Dirt("dirt");
+        Dirt("dirt"),
+        Brick("brick");
 
         public final Texture texture;
         public final int[][] tex;
