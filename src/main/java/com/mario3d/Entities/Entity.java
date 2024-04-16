@@ -17,6 +17,7 @@ public abstract class Entity implements GameEventListener{
     public int[] tag;
     public Collision collision;
     public boolean repulsion = false;
+    public boolean loaded = false;
 
     protected Entity(String id, WorldPosition pos) {
         this.id = id;
@@ -86,6 +87,10 @@ public abstract class Entity implements GameEventListener{
             }
             case "trapmessagebox": {
                 entity = new TrapMessageBox(pos);
+                break;
+            }
+            case "trapfloor": {
+                entity = new TrapFloor(pos, tag);
                 break;
             }
         }

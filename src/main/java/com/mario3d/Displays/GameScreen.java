@@ -182,8 +182,7 @@ public class GameScreen implements Window{
 
     public static enum CubeDisplayType {
         COMMON(0, new Common()),
-        GRASS(1, new Grass()),
-        CUSTOM(2, null);
+        GRASS(1, new Grass());
         public final CubeDisplayData cdd;
         private CubeDisplayType(int type, CubeDisplayData cdd) {
             this.cdd = cdd;

@@ -11,6 +11,7 @@ import com.mario3d.Cubes.Cube;
 import com.mario3d.Displays.GameScreen;
 import com.mario3d.Entities.Entity;
 import com.mario3d.Models.ModelDeath;
+import com.mario3d.Scenes.GameScene;
 import com.mario3d.WorldSystem.WorldChunkPosition;
 import com.mario3d.WorldSystem.WorldPosition;
 
@@ -60,9 +61,17 @@ public class World {
 
     public void EntityCalc() {
         for (Entity e : entities) {
-            e.calc();
+            if (calcornot(e)) e.calc();
             if (e.pos.y < -100) e.kill();
         }
+    }
+
+    private boolean calcornot(Entity e) {
+        final double borderload = 30;
+        if (e.loaded) return true;
+        WorldPosition playerpos = GameScene.player.pos;
+        if (Math.abs(playerpos.x - e.pos.x) < borderload && Math.abs(playerpos.z - e.pos.z) < borderload) {e.loaded = true; return true;}
+        else return false;
     }
 
     private Queue<Entity> addentity = new LinkedList<>();

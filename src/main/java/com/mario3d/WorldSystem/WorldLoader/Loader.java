@@ -73,6 +73,9 @@ public class Loader {
             case 3:
                 cube = new Grass(p1, p2);
                 break;
+            case 4:
+                cube = new Brick(p1, p2);
+                break;
         }
         world.addCubeToMap(cube);
         world.cubes.add(cube);
@@ -126,6 +129,10 @@ public class Loader {
             }
             case 10: {
                 entity = Entity.NewEntity("trapmessagebox", pos, tag);
+                break;
+            }
+            case 11: {
+                entity = Entity.NewEntity("trapfloor", pos, tag);
                 break;
             }
         }

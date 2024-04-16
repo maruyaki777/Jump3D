@@ -108,11 +108,9 @@ public class ModelPlayer implements Model, InnerModelDeath{
     public ModelPlayer(Player entity) {
         this.entity = entity;
         this.oldpos = new WorldPosition(entity.pos);
-        WP_fpsbuffer = new FPSBufferStream<WorldPosition>(FPSBufferUtils::WP_calc, this::getpos, GameManager.fps, new WorldPosition(entity.pos));
-        Asp_fpsbuffer = new FPSBufferStream<Aspect>(FPSBufferUtils::Asp_calc, this::getAsp, GameManager.fps, new Aspect(entity.aspect));
+        WP_fpsbuffer = new FPSBufferStream<WorldPosition>(FPSBufferUtils::WP_calc, ()->{return this.entity.pos;}, GameManager.fps, new WorldPosition(entity.pos));
+        Asp_fpsbuffer = new FPSBufferStream<Aspect>(FPSBufferUtils::Asp_calc, ()->{return this.entity.aspect;}, GameManager.fps, new Aspect(entity.aspect));
     }
-    private WorldPosition getpos() {return entity.pos;}
-    private Aspect getAsp() {return entity.aspect;}
 
     public void init() {
 

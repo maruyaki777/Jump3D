@@ -27,12 +27,18 @@ public class Common implements CubeDisplayData{
 
     private Texture lava = Textures.Loader.getTexture("block", "lava");
     private Texture dirt = Textures.Loader.getTexture("block", "dirt");
+    private Texture brick = Textures.Loader.getTexture("block", "brick");
+    private Texture olddirt = Textures.Loader.getTexture("block", "olddirt");
     private Texture getTex(String id) {
         switch (id) {
             case "dirt":
                 return dirt;
             case "lava":
                 return lava;
+            case "brick":
+                return brick;
+            case "olddirt":
+                return olddirt;
         }
         return Textures.error_png;
     }
