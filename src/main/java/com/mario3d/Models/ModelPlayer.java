@@ -119,7 +119,8 @@ public class ModelPlayer implements Model, InnerModelDeath{
     //描画対象の座標
     public WorldPosition setPosition() {
         //return entity.pos;
-        return (latestpos = WP_fpsbuffer.read());
+    	latestpos = WP_fpsbuffer.read();
+        return GameScreen.playerpos != null ? GameScreen.playerpos : latestpos;
     }
 
     //描画対象の角度
@@ -133,8 +134,8 @@ public class ModelPlayer implements Model, InnerModelDeath{
     private WorldPosition latestpos;
     //何回nextCubeを呼び出せばいいか 位置変更の指示の役割もある
     public int getCubeCount() {
-        WP_fpsbuffer.setLastFPS(GameManager.fps);
-        Asp_fpsbuffer.setLastFPS(GameManager.fps);
+        WP_fpsbuffer.setLastFPS(GameManager.display.getFPS());
+        Asp_fpsbuffer.setLastFPS(GameManager.display.getFPS());
         if (GameScene.state == GameScene.State.GAME) {
             if (Math.abs(oldpos.x - latestpos.x) > 0.05 * ((float)GameManager.gameTick / (GameManager.display.getFPS() + 0.1f)) || Math.abs(oldpos.z - latestpos.z) > 0.05 * ((float)GameManager.gameTick / (GameManager.display.getFPS() + 0.1f)))
                 handpos = calchandaspect(handpos);

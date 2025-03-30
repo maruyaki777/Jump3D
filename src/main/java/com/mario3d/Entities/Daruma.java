@@ -45,12 +45,11 @@ public class Daruma extends Entity{
         if (Math.abs(movedegree) < d) aspect.set(degree, aspect.y);
         else aspect.add(unit * d, 0);
 
-        double force = 0.03;
-        double maxforce = 0.1;
+        double force = 0.0165;
         force *= 1 - (Math.abs(movedegree) / 180);
         double vectorX = Math.sin(Math.toRadians(aspect.x));
         double vectorZ = Math.cos(Math.toRadians(aspect.x));
-        physic.addForce(vectorX * force, 0, vectorZ * force, vectorX * maxforce, 0, vectorZ * maxforce);
+        physic.addForce(vectorX * force, 0, vectorZ * force);
     }
 
     @Override

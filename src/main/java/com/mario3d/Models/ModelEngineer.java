@@ -73,10 +73,12 @@ public class ModelEngineer implements Model, InnerModelDeath{
     );
 
     private final Engineer entity;
+    private FPSBufferStream<WorldPosition> WP_fpsbuffer;
     private FPSBufferStream<Aspect> Asp_fpsbuffer;
 
     public ModelEngineer(Engineer entity) {
         this.entity = entity;
+        WP_fpsbuffer = new FPSBufferStream<WorldPosition>(FPSBufferUtils::WP_calc, ()->{return this.entity.pos;}, GameManager.fps, new WorldPosition(entity.pos));
         Asp_fpsbuffer = new FPSBufferStream<Aspect>(FPSBufferUtils::Asp_calc, ()->{return this.entity.aspect;}, GameManager.fps, new Aspect(entity.aspect));
     }
 
@@ -84,7 +86,7 @@ public class ModelEngineer implements Model, InnerModelDeath{
 
     //描画対象の座標
     public WorldPosition setPosition() {
-        return entity.pos;
+        return WP_fpsbuffer.read();
     }
 
     //描画対象の角度
@@ -95,6 +97,8 @@ public class ModelEngineer implements Model, InnerModelDeath{
     //何回nextCubeを呼び出せばいいか 位置変更の指示の役割もある
     public int getCubeCount() {
         fi = -1;
+        WP_fpsbuffer.setLastFPS(GameManager.display.getFPS());
+        Asp_fpsbuffer.setLastFPS(GameManager.display.getFPS());
         return 4;
     }
 

@@ -17,7 +17,7 @@ public class Textures {
         try {
             error_png = TextureIO.newTexture(Textures.class.getResourceAsStream("/assets/textures/misc/old_ground_tex.png"), true, TextureIO.PNG);
             String[] blocks = new String[] {"ground", "bedrock", "grass", "grass_face", "grass_dirt", "lava", "dirt", "brick"};
-            String[] entities = new String[] {"player", "sat", "lift", "messagebox", "daruma", "engineer", "faller", "goal", "turtle", "trapmessagebox"};
+            String[] entities = new String[] {"player", "sat", "lift", "messagebox", "daruma", "engineer", "faller", "goal", "turtle", "trapmessagebox", "checkpoint", "maneki", "coinbundle", "fire"};
             String[] miscs = new String[] {"title", "old_ground_tex", "player2D"};
             Textures.Loader.loadTexture(Textures.Block.textures, 0, "block", blocks);
             Textures.Loader.loadTexture(Textures.Entity.textures, 0, "entity", entities);
@@ -71,14 +71,14 @@ public class Textures {
     }
 
     public static class Block {
-        public static Texture[] textures = new Texture[10];
+        public static Texture[] textures = new Texture[15];
     }
 
     public static class Entity {
-        public static Texture[] textures = new Texture[10];
+        public static Texture[] textures = new Texture[15];
     }
 
     public static class Misc {
-        public static Texture[] textures = new Texture[10];
+        public static Texture[] textures = new Texture[15];
     }
 }

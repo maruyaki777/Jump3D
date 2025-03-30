@@ -27,9 +27,8 @@ public class TitleScene implements Scene, KeyAction{
                 break;
             }
             case KeyEvent.VK_ENTER: {
+            	GameScene.resetProfile();
                 next = GameManager.scene_slot[2];
-                GameScene.resetRemaining();
-                GameScene.resetCourseid();
                 break;
             }
             case KeyEvent.VK_0: {

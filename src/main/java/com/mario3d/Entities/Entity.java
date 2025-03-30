@@ -33,6 +33,11 @@ public abstract class Entity implements GameEventListener{
 
     @Override
     public void onEvent(GameEvent event) {}
+    
+    private double loadrange = 30;
+    public double getloadrange() {return loadrange;}
+    
+    public void setloadrange(double range) {loadrange = range;}
 
     public static Entity NewEntity(Entity entity) {
         return NewEntity(entity.id, entity.pos, entity.tag);
@@ -93,18 +98,34 @@ public abstract class Entity implements GameEventListener{
                 entity = new TrapFloor(pos, tag);
                 break;
             }
+            case "spawner": {
+            	entity = new Spawner(pos, tag);
+            	break;
+            }
+            case "signalpoint": {
+            	entity = new SignalPoint(pos, tag);
+            	break;
+            }
+            case "checkpoint": {
+            	entity = new CheckPoint(pos, tag);
+            	break;
+            }
+            case "maneki": {
+            	entity = new Maneki(pos);
+            	break;
+            }
         }
         entity.tag = tag.clone();
         return entity;
     }
 
     public void repulsion_calc(Entity e, Physic physic) {
-        final double force = 0.04;
+        final double force = 0.044;
         double x = this.pos.x - e.pos.x;
         double z = this.pos.z - e.pos.z;
         double distant = Math.sqrt((x * x) + (z * z));
         x /= distant;
         z /= distant;
-        physic.addForce(x * force, 0, z * force, x * force, 0, z * force);
+        if (distant != 0 && x != Double.NaN && z != Double.NaN) physic.addForce(x * force, 0, z * force);
     }
 }

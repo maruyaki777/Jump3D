@@ -12,7 +12,7 @@ import java.awt.Font;
 
 public class DebugScreen implements Window{
     private static final TextRenderer textr = new TextRenderer(new Font("PixelMplus12", Font.PLAIN, 100), false);
-    private static final int downperslot = 80;
+    private static final int downperslot = 20;
 
     @Override
     public void display(GL2 gl) {
@@ -23,12 +23,12 @@ public class DebugScreen implements Window{
         int height = GameManager.display.height;
         float ap = (float)Display.default_width / width;
         textr.beginRendering((int)(width * 4 * ap), (int)(height * 4 * ap));
-        textr.draw("FPS: " + String.valueOf(GameManager.fps), 0, height * 4 - downperslot * down_slots++);
+        textr.draw("FPS: " + String.valueOf((float)Math.round(GameManager.display.getAverageFPS() * 10.0f) / 10.0f), 0, (int)(height * 4 * ap) - (int)(downperslot * 4 * down_slots++));
         if (GameScene.world != null)
-        textr.draw("E: "+String.valueOf(GameScene.world.entities.size())+"  M: "+String.valueOf(GameScreen.models.size()+GameScreen.deathmodels.size()), 0, height*4-downperslot*down_slots++);
-        textr.draw("EventQueue:", 0, height * 4 - downperslot * down_slots++);
+        textr.draw("E: "+String.valueOf(GameScene.world.entities.size())+"  M: "+String.valueOf(GameScreen.models.size()+GameScreen.deathmodels.size()), 0, (int)(height*4*ap)-(int)(downperslot*4*down_slots++));
+        textr.draw("EventQueue:", 0, (int)(height * 4 * ap) - (int)(downperslot * 4 * down_slots++));
         for (GameEvent event : DebugManager.events) {
-            textr.draw("    " + event.eventType.toString(), 0, height * 4 - downperslot * down_slots++);
+            textr.draw("    " + event.eventType.toString(), 0, (int)(height * 4 * ap) - (int)(downperslot * 4 * down_slots++));
         }
         textr.endRendering();
     }

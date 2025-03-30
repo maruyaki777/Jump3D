@@ -8,6 +8,7 @@ import com.mario3d.Events.MonsterDamageEvent;
 import com.mario3d.Models.ModelEngineer;
 import com.mario3d.Scenes.GameScene;
 import com.mario3d.Utils.Collision;
+import com.mario3d.Utils.Physic;
 import com.mario3d.WorldSystem.WorldPosition;
 
 public class Engineer extends Entity{
@@ -15,17 +16,20 @@ public class Engineer extends Entity{
         super("engineer", pos);
         super.model = new ModelEngineer(this);
         collision = new Collision(this, 0.5, 1.3);
+        physic = new Physic(collision);
         GameScreen.models.add(model);
         this.time = 0;
         super.repulsion = true;
     }
 
+    private Physic physic;
     private int time;
     private static final int interval = 150;
 
     @Override
     public void calc() {
         setAspect();
+        pos = physic.calc(pos);
         //攻撃
         final double playertargetheight = 1.2;
         final double entityfrom = 0.5;

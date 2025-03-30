@@ -15,17 +15,23 @@ public class ModelDeath implements Model{
     public final double red;
     public final double green;
     public final double blue;
+    public final double alpha_per;
 
     public ModelDeath(Model model, double r, double g, double b) {
-        this.model = model;
-        this.red = r;
-        this.green = g;
-        this.blue = b;
+    	this(model, r, g, b, 0.02);
+    }
+    
+    public ModelDeath(Model model, double r, double g, double b, double alpha_per) {
+    	this.model = model;
+    	this.red = r;
+    	this.green = g;
+    	this.blue = b;
+    	this.alpha_per = alpha_per;
     }
 
     public double fadeout() {
         if (GameScene.state != GameScene.State.GAME) return fade;
-        fade -= 0.02 * ((float)GameManager.gameTick / (GameManager.display.getFPS() + 0.1f));
+        fade -= alpha_per * ((float)GameManager.gameTick / (GameManager.display.getFPS() + 0.1f));
         if (fade < 0) {
             fade = 0;
             GameScreen.deathmodels.remove(this);

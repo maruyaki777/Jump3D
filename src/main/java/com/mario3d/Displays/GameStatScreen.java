@@ -23,7 +23,7 @@ public class GameStatScreen implements Window{
         GameManager.display.display2D(gl);
         textr.setColor(1, 1, 1, 1);
         textr.beginRendering(x, y);
-        textr.draw("R ×" + String.valueOf(GameScene.Remaining), 30, 1500);
+        textr.draw("R ×" + String.valueOf(GameScene.getRemaining()), 30, 1500);
         textr.endRendering();
         if (time > 100) textr.setColor(1, 1, 1, 1);
         else if (time > 30) textr.setColor(1, 0.5f, 0, 1);

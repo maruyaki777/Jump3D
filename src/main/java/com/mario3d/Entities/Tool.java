@@ -14,6 +14,7 @@ public class Tool extends Entity{
     public Tool(WorldPosition pos, Aspect aspect) {
         super("tool", pos);
         super.model = new ModelTool(this);
+        setloadrange(Integer.MAX_VALUE);
         this.aspect = aspect;
         collision = new Collision(this, 0.25, 0.5);
         GameScreen.models.add(model);

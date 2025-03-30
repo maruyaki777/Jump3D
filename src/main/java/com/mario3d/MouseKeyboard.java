@@ -47,13 +47,17 @@ public class MouseKeyboard implements MouseListener, KeyListener{
     }
 
     //ゲームで使うキー
-    public boolean K_w = false;
-    public boolean K_a = false;
-    public boolean K_s = false;
-    public boolean K_d = false;
-    public boolean K_space = false;
+    private boolean K_w = false;
+    private boolean K_a = false;
+    private boolean K_s = false;
+    private boolean K_d = false;
+    private boolean K_space = false;
 
-
+    public boolean getKeyStateVK_W() {return K_w;}
+    public boolean getKeyStateVK_A() {return K_a;}
+    public boolean getKeyStateVK_S() {return K_s;}
+    public boolean getKeyStateVK_D() {return K_d;}
+    public boolean getKeyStateVK_Space() {return K_space;}
 
 
     //マウス関係

@@ -192,6 +192,8 @@ public class ModelTurtle implements Model, InnerModelDeath{
     //何回nextCubeを呼び出せばいいか 位置変更の指示の役割もある
     public int getCubeCount() {
         fi = -1;
+        WP_fpsbuffer.setLastFPS(GameManager.display.getFPS());
+        Asp_fpsbuffer.setLastFPS(GameManager.display.getFPS());
         if (entity.getmode() != this.mode) innerAspect = new Aspect(entity.aspect);
         if ((this.mode = entity.getmode()) == 0) {corners = corners_default; tex = tex_default;}
         else {corners = corners_in; tex = tex_in;}

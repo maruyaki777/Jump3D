@@ -28,6 +28,7 @@ public class ModelTrapFloor implements Model{
     };
 
     private final int[][] tex;
+    private final int[][] tex_face;
     private final int x_floor;
 
     private TrapFloor entity;
@@ -49,8 +50,17 @@ public class ModelTrapFloor implements Model{
                 type = TF_tex.Brick;
                 break;
             }
+            case 3: {
+            	type = TF_tex.Lava;
+            	break;
+            }
+            case 4: {
+            	type = TF_tex.OldDirt;
+            	break;
+            }
         }
         tex = type.tex;
+        tex_face = type.tex_face;
     }
 
     @Override
@@ -84,7 +94,10 @@ public class ModelTrapFloor implements Model{
     @Override
     public Texture modelTex() {return type.texture;}
     @Override
-    public int[][] nextFaceTexCut() {return tex;}
+    public int[][] nextFaceTexCut() {
+    	if (ti == 1 || ti == 4) return tex;
+    	else return tex_face;
+    }
 
     private double[][] result = new double[4][];
     @Override
@@ -101,14 +114,18 @@ public class ModelTrapFloor implements Model{
     private enum TF_tex {
         Grass("grass"),
         Dirt("dirt"),
-        Brick("brick");
+        Brick("brick"),
+    	Lava("lava"),
+    	OldDirt("ground");
 
         public final Texture texture;
         public final int[][] tex;
+        public final int[][] tex_face;
         private TF_tex(String name) {
             texture = Textures.Loader.getTexture("block", name);
             int x = texture.getWidth(), y = texture.getHeight();
             this.tex = new int[][] {{0, 0}, {x, 0}, {x, y}, {0, y}};
+            this.tex_face = new int[][] {{0, y/2},{x, y/2}, {x, y}, {0, y}};
         }
     }
 }
