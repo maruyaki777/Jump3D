@@ -1,5 +1,6 @@
 package com.mario3d.WorldSystem.World;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,12 +22,17 @@ public class World {
     public List<Entity> entities;
     public List<CubeEntity> cubeentities;
     public Queue<Entity> killEntities = new LinkedList<>();
+    
+    public final Color skycolor;
+    public final int world_time;
 
     //インスタンス化は同時に一個まで　ここでモデルを消す
     public World(BasicWorld bw) {
         map = bw.map;
         cubes = bw.cubes;
         entities = new LinkedList<>();
+        this.skycolor = bw.skycolor;
+        this.world_time = bw.world_time;
         GameScreen.models = new CopyOnWriteArrayList<>();
         GameScreen.deathmodels = new CopyOnWriteArrayList<>();
         for (Entity entity : bw.entities) {
@@ -38,6 +44,8 @@ public class World {
         map = new HashMap<>();
         cubes = new LinkedList<>();
         entities = new LinkedList<>();
+        skycolor = new Color(0f, 0f, 0f);
+        world_time = GameScene.default_time;
     }
 
     public void addCubeToMap(Cube cube) {
@@ -67,7 +75,7 @@ public class World {
     }
 
     private boolean calcornot(Entity e) {
-        final double borderload = 30;
+        final double borderload = e.getloadrange();
         if (e.loaded) return true;
         WorldPosition playerpos = GameScene.player.pos;
         if (Math.abs(playerpos.x - e.pos.x) < borderload && Math.abs(playerpos.z - e.pos.z) < borderload) {e.loaded = true; return true;}

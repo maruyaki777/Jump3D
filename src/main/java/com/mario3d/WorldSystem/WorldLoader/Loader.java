@@ -1,10 +1,13 @@
 package com.mario3d.WorldSystem.WorldLoader;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Properties;
 
 import com.mario3d.Cubes.*;
 import com.mario3d.Entities.*;
+import com.mario3d.Utils.Identification;
 import com.mario3d.WorldSystem.WorldPosition;
 import com.mario3d.WorldSystem.World.BasicWorld;
 import	java.io.InputStream;
@@ -12,7 +15,7 @@ import	java.io.InputStream;
 public class Loader {
     public static BasicWorld start(String directory) {
         BasicWorld world = new BasicWorld();
-        try (InputStream inputStream = Loader.class.getResourceAsStream(directory);) {
+        try (InputStream inputStream = Loader.class.getResourceAsStream(directory + "/world.dat");) {
             byte[] bytes = new byte[128];
             byte[] magic = new byte[] {87, 111, 114, 108, 100};
             inputStream.read(bytes, 0, 5);
@@ -54,6 +57,11 @@ public class Loader {
                 AddEntity(world, id, pos, tag);
             }
             inputStream.close();
+            
+            Properties prop = new Properties();
+            prop.load(Loader.class.getResourceAsStream(directory + "/worldinfo.properties"));
+            world.skycolor = new Color(Float.parseFloat(prop.getProperty("red")), Float.parseFloat(prop.getProperty("green")), Float.parseFloat(prop.getProperty("blue")));
+            world.world_time = Integer.parseInt(prop.getProperty("time"));
         }
         catch (IOException e) {System.err.println(e);}
         return world;
@@ -76,6 +84,9 @@ public class Loader {
             case 4:
                 cube = new Brick(p1, p2);
                 break;
+            case 5:
+            	cube = new OldDirt(p1, p2);
+            	break;
         }
         world.addCubeToMap(cube);
         world.cubes.add(cube);
@@ -83,7 +94,12 @@ public class Loader {
 
     private static void AddEntity(BasicWorld world, int id, WorldPosition pos, int[] tag) {
         Entity entity = null;
-        switch (id) {
+        if (id == 0) return;
+        String entityid = Identification.getEntityID(id);
+        if (entityid == null) return;
+        entity = Entity.NewEntity(entityid, pos, tag);
+        
+        /*switch (id) {
             case 0: {
                 return;
             }
@@ -135,7 +151,7 @@ public class Loader {
                 entity = Entity.NewEntity("trapfloor", pos, tag);
                 break;
             }
-        }
+        }*/
         world.entities.add(entity);
     }
 }

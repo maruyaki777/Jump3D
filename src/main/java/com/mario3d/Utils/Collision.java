@@ -20,7 +20,8 @@ public class Collision {
     public final double dx;
     public final double dy;
     public final Entity entity;
-    public boolean touch[];//-x -y -z x y z
+    public boolean[] touch;//-x -y -z x y z
+    private boolean[] old_touch;
     protected WorldPosition climbed;
     
     //dxは座標からの半径（四角形）dyは座標からの高さ
@@ -37,8 +38,10 @@ public class Collision {
         List<Cube> calced = new ArrayList<>();//すでに計算済みのをもう一度計算するのを防ぐため
         HashMap<WorldChunkPosition, Chunk> map = GameScene.world.map;//文を見やすく
         double[] vec = new double[] {to.x - from.x, to.y - from.y, to.z - from.z};//移動している方向を得るためのもの
+        old_touch = touch;
         touch = new boolean[6];//接地判定の再計算のため
         RelativePosition rp = new RelativePosition(to.x - from.x, to.y - from.y, to.z - from.z);//一番距離が短いのを選択するためのもの。
+        RelativePosition rp_un = new RelativePosition(to.x - from.x, to.y - from.y, to.z - from.z);//不安定なもの
         RelativePosition climb = null;
         for (int i = -1;i <= 1;i++) for (int j = -1;j <= 1;j++) {
             wcp.x += i; wcp.z += j;
@@ -53,9 +56,11 @@ public class Collision {
                 if (climb == null) climb = r.climb;
                 else if (r.climb != null && climb.y < r.climb.y) climb = r.climb;
                 t = r.rp;
-                if ((rp.x - t.x) * get1(vec[0]) > 0) rp.x = t.x;//一番距離が短いのにする
-                if ((rp.y - t.y) * get1(vec[1]) > 0) rp.y = t.y;
-                if ((rp.z - t.z) * get1(vec[2]) > 0) rp.z = t.z;
+                if (r.confirm_x && (rp.x - t.x) * get1(vec[0]) > 0) rp.x = t.x;//一番距離が短いのにする
+                else if ((rp_un.x - t.x) * get1(vec[0]) > 0) rp_un.x = t.x;
+                if ((rp.y - t.y) * get1(vec[1]) > 0) {rp.y = t.y;rp_un.y = t.y;}
+                if (r.confirm_z && (rp.z - t.z) * get1(vec[2]) > 0) rp.z = t.z;
+                else if ((rp_un.z - t.z) * get1(vec[2]) > 0) rp_un.z = t.z;
             }
         }
         for (Entity e : GameScene.world.entities) {
@@ -68,6 +73,7 @@ public class Collision {
             }
             else withEntity(e, from);;
         }
+        if (Math.abs(rp_un.x) < Math.abs(rp.x) && Math.abs(rp_un.z) < Math.abs(rp.z)) rp = rp_un;
         WorldPosition resultpos = rp.getAbsolutePos(from);
         if (climb == null) this.climbed = null;
         else this.climbed = climb.getAbsolutePos(from);
@@ -97,11 +103,20 @@ public class Collision {
         if (r >= 3) return true;
         return false;
     }
-
+/* 
     private boolean inrangeXZ(WorldPosition target, Cube c) {
         int r = 0;
         if (c.BasePos.x < target.x + dx && target.x - dx < c.BasePos.x + c.dx) r++;
         if (c.BasePos.z < target.z + dx && target.z - dx < c.BasePos.z + c.dz) r++;
+        if (r >= 2) return true;
+        return false;
+    }
+*/
+    private boolean inrangeXYZ(WorldPosition target, Cube c, int ignorevec) {
+        int r = 0;
+        if (ignorevec != 0 && c.BasePos.x < target.x + dx && target.x - dx < c.BasePos.x + c.dx) r++;
+        if (ignorevec != 1 && c.BasePos.y < target.y + dy && target.y < c.BasePos.y + c.dy) r++;
+        if (ignorevec != 2 && c.BasePos.z < target.z + dx && target.z - dx < c.BasePos.z + c.dz) r++;
         if (r >= 2) return true;
         return false;
     }
@@ -161,11 +176,23 @@ public class Collision {
                 slot = 0;
             }
         }
-        else if (inrangeXZ(to, cube) && vec[1] == 0 && to.y - 0.1 - cube.corners[cube.face[4][0]].y <= 0 && to.y + dy - cube.corners[cube.face[4][0]].y > 0) {touch[1] = true;collided = true;}
+        else {//改良必須
+            if (inrangeXYZ(from, cube, 0)) {
+                if (old_touch[0] && to.x - dx - 0.1 - cube.corners[cube.face[3][0]].x <= 0 && to.x + dx - cube.corners[cube.face[3][0]].x > 0) {touch[0] = true;collided = true;}
+                else if (old_touch[3] && to.x + dx + 0.1 - cube.corners[cube.face[0][0]].x >= 0 && to.x - dx - cube.corners[cube.face[0][0]].x < 0) {touch[3] = true;collided = true;}
+            }
+            if (inrangeXYZ(to, cube, 1) && vec[1] == 0 && to.y - 0.1 - cube.corners[cube.face[4][0]].y <= 0 && to.y + dy - cube.corners[cube.face[4][0]].y > 0) {touch[1] = true;collided = true;}
+            if (inrangeXYZ(from, cube, 2)) {
+                if (old_touch[2] && to.z - dx - 0.1 - cube.corners[cube.face[5][0]].z <= 0 && to.z + dx - cube.corners[cube.face[5][0]].z > 0) {touch[2] = true;collided = true;}
+                else if (old_touch[5] && to.z + dx + 0.1 - cube.corners[cube.face[2][0]].z >= 0 && to.z - dx - cube.corners[cube.face[2][0]].z < 0) {touch[5] = true;collided = true;}
+            }
+        }
         //当たっているか
         if (climb) result = new Result(new RelativePosition(xt - from.x, yt - from.y, zt - from.z), new RelativePosition(to.x - from.x, cube.BasePos.y + cube.dy - from.y + 0.01, to.z - from.z));
         else result = new Result(new RelativePosition(xt - from.x, yt - from.y, zt - from.z));
         if (collided) GameEvent.add(new CollisionEvent(cube, entity, new WorldPosition(from)));
+        result.confirm_x = inrangeXYZ(from, cube, 0);
+        result.confirm_z = inrangeXYZ(from, cube, 2);
         return result;
     }
 
@@ -240,6 +267,8 @@ public class Collision {
     private static class Result {
         public final RelativePosition rp;
         public final RelativePosition climb;
+        public boolean confirm_x = true;
+        public boolean confirm_z = true;
 
         public Result(RelativePosition rp) {
             this.rp = rp;
@@ -285,7 +314,7 @@ public class Collision {
         check.x = 0; check.y = stairpos.y - fromtmp.y; check.z = 0;
         if (check.getAbsolutePos(fromtmp).equals(calc(fromtmp, stairpos)) == false) {result = null;this.touch = touchbuf;}
         else {this.touch = touchbuf_climb;}
-        climbed = stairpos;
+        climbed = null;
         return result;
     }
 }

@@ -24,6 +24,7 @@ public class Player extends Entity{
         pasp = new Aspect(0, 0);
         collision = new Collision(this, 0.5, 2);
         physic = new Physic(collision);
+        physic.setGroundResistance(0.35);
         GameScene.player = this;
     }
 
@@ -39,9 +40,10 @@ public class Player extends Entity{
         GameScene.world.removeEntity(this);
         alive = false;
     }
-
+    
     private void calcDefault() {
         KeyInput();
+        //System.out.printf("%f %f %f\n", physic.force[0], physic.force[1], physic.force[2]);
         WorldPosition postmp = physic.calc(pos);
         WorldPosition climb;
         if ((climb = collision.calc_up_stair(pos)) != null) pos = climb;
@@ -68,45 +70,56 @@ public class Player extends Entity{
     private void KeyInput() {
         MouseKeyboard mk = GameManager.mk;
         final double force;
-        final double max;
-        if ((mk.K_w || mk.K_s) && (mk.K_a || mk.K_d)) {
-            force = 0.07;
-            max = 0.21;
+        if ((mk.getKeyStateVK_W() || mk.getKeyStateVK_S()) && (mk.getKeyStateVK_A() || mk.getKeyStateVK_D())) {
+            force = 0.0427;
         }
         else {
-            force = 0.1;
-            max = 0.3;
+            force = 0.0605;
         }
-        if (mk.K_w) {
-            double vectorX = Math.sin(Math.toRadians(aspect.x + 180));
+        double xforce = 0;
+        double zforce = 0;
+        if (mk.getKeyStateVK_W()) {
+            double vectorX = Math.sin(Math.toRadians(-aspect.x));
             double vectorZ = Math.cos(Math.toRadians(aspect.x));
-            physic.addForce(vectorX * force, 0, vectorZ * force, vectorX * max, 0, vectorZ * max);
+            xforce += vectorX * force;
+            zforce += vectorZ * force;
         }
-        if (mk.K_a) {
-            double vectorX = Math.sin(Math.toRadians(aspect.x + 90));
+        if (mk.getKeyStateVK_A()) {
+            double vectorX = Math.sin(Math.toRadians(-aspect.x - 270));
             double vectorZ = Math.cos(Math.toRadians(aspect.x + 270));
-            physic.addForce(vectorX * force, 0, vectorZ * force, vectorX * max, 0, vectorZ * max);
+            xforce += vectorX * force;
+            zforce += vectorZ * force;
         }
-        if (mk.K_s) {
-            double vectorX = Math.sin(Math.toRadians(aspect.x));
+        if (mk.getKeyStateVK_S()) {
+            double vectorX = Math.sin(Math.toRadians(-aspect.x - 180));
             double vectorZ = Math.cos(Math.toRadians(aspect.x + 180));
-            physic.addForce(vectorX * force, 0, vectorZ * force, vectorX * max, 0, vectorZ * max);
+            xforce += vectorX * force;
+            zforce += vectorZ * force;
         }
-        if (mk.K_d) {
-            double vectorX = Math.sin(Math.toRadians(aspect.x + 270));
+        if (mk.getKeyStateVK_D()) {
+            double vectorX = Math.sin(Math.toRadians(-aspect.x - 90));
             double vectorZ = Math.cos(Math.toRadians(aspect.x + 90));
-            physic.addForce(vectorX * force, 0, vectorZ * force, vectorX * max, 0, vectorZ * max);
+            xforce += vectorX * force;
+            zforce += vectorZ * force;
         }
+        /*if (cforce > 0) {
+        	xforce /= cforce;
+            zforce /= cforce;
+            xmax /= cforce;
+            zmax /= cforce;
+        }*/
+        //System.out.printf("%f %f %f\n", xforce, 0.0, zforce);
+        physic.addForce(xforce, 0.0, zforce);
         if (collision.touch[1]) doublejump = true;
-        if (mk.K_space && !old_space) {
-            if (collision.touch[1]) physic.addForce(0, 0.2, 0, 0, 0.8, 0);
+        if (mk.getKeyStateVK_Space() && !old_space) {
+            if (collision.touch[1]) physic.addForce(0, 0.2, 0);
             else if (doublejump) {
                 if (physic.speed[1] < 0) physic.speed[1] = 0;
-                physic.addForce(0, 0.15, 0, 0, 0.8, 0);
+                physic.addForce(0, 0.15, 0);
                 doublejump = false;
             }
         }
-        old_space = mk.K_space;
+        old_space = mk.getKeyStateVK_Space();
     }
 
     private double goal_downtime;
@@ -124,13 +137,13 @@ public class Player extends Entity{
             goaled = true;
         }
         else if (event.eventType == GameEvent.EventType.SteppedEntity) {
-            if (GameManager.mk.K_space) {
+            if (GameManager.mk.getKeyStateVK_Space()) {
                 physic.speed[1] = 0;
-                physic.addForce(0, 0.25, 0, 0, 0.8, 0);
+                physic.addForce(0, 0.25, 0);
             }
             else {
                 physic.speed[1] = 0;
-                physic.addForce(0, 0.10, 0, 0, 0.8, 0);
+                physic.addForce(0, 0.10, 0);
             }
         }
         else if (event.eventType == GameEvent.EventType.TouchLava) kill();

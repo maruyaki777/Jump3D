@@ -6,15 +6,11 @@ import com.mario3d.WorldSystem.World.World;
 public class CourseSelector {
     private static int old_level = -1;
     private static BasicWorld basicWorld;
-    private static final int maxlevel = 0;
+    private static final int maxlevel = 2;
     public static World selector(int level) {
         if (old_level == level) return new World(basicWorld);
-        /*switch (level) {
-            case -1:
-                basicWorld = Loader.start("/worlds/test/world.dat");
-                break;
-        }*/
-        basicWorld = Loader.start("/worlds/"+String.valueOf(level)+"/world.dat");
+        basicWorld = Loader.start("/worlds/"+String.valueOf(level));
+        //basicWorld = Loader.start("/worlds/test");
         old_level = level;
         return new World(basicWorld);
     }

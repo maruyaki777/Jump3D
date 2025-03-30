@@ -35,7 +35,8 @@ public abstract class GameEvent {
         SteppedEntity("SteppedEntityEvent"),
         TouchLava("TouchLavaEvent"),
         MonsterDamage("MonsterDamageEvent"),
-        Kill("KillEvent");
+        Kill("KillEvent"),
+    	Signal("SignalEvent");
 
         private final String name;
         private EventType(String toString) {this.name = toString;}

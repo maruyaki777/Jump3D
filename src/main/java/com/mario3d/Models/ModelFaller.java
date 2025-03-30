@@ -86,6 +86,8 @@ public class ModelFaller implements Model, InnerModelDeath{
     //何回nextCubeを呼び出せばいいか 位置変更の指示の役割もある
     public int getCubeCount() {
         fi = -1;
+        WP_fpsbuffer.setLastFPS(GameManager.display.getFPS());
+        Asp_fpsbuffer.setLastFPS(GameManager.display.getFPS());
         return 3;
     }
 

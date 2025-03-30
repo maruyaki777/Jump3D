@@ -48,7 +48,7 @@ public class DownScreen implements Window{
         float ap2 = (float)Display.default_height / GameManager.display.height;
         int w = (int)(rd_remaining.getHeight());
         textr.beginRendering((int)(GameManager.display.width * 2 * ap2), (int)(GameManager.display.height * 2 * ap2));
-        textr.draw("×"+String.valueOf(GameScene.Remaining), (int)(GameManager.display.width * ap2), (int)(GameManager.display.height * ap2)-(w / 2));
+        textr.draw("×"+String.valueOf(GameScene.getRemaining()), (int)(GameManager.display.width * ap2), (int)(GameManager.display.height * ap2)-(w / 2));
         textr.endRendering();
     }
 }

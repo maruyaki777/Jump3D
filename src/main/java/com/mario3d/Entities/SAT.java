@@ -22,6 +22,8 @@ public class SAT extends Entity{
         GameScreen.models.add(model);
         collision = new Collision(this, 0.8, 1.0);
         physic = new Physic(collision);
+        physic.setAirResistance(0.15);
+        physic.setGroundResistance(0.25);
     }
 
     @Override
@@ -67,13 +69,12 @@ public class SAT extends Entity{
         if (t < 3) aspect.set(degree, 0);
         else aspect.add(d, 0);
 
-        double force = 0.1;
-        double max = 0.4;
+        double force = 0.065;
         force *= 1 - ((double)degreeA / 180);
         double vectorX = Math.sin(Math.toRadians(aspect.x));
         double vectorZ = Math.cos(Math.toRadians(aspect.x));
-        physic.addForce(vectorX * force, 0, vectorZ * force, vectorX * max, 0, vectorZ * max);
-        if (GameManager.mk.K_space && !old_space && collision.touch[1]) physic.addForce(0, 0.3, 0, 0, 0.8, 0);
-        old_space = GameManager.mk.K_space;
+        physic.addForce(vectorX * force, 0, vectorZ * force);
+        if (GameManager.mk.getKeyStateVK_Space() && !old_space && collision.touch[1]) physic.addForce(0, 0.3, 0);
+        old_space = GameManager.mk.getKeyStateVK_Space();
     }
 }

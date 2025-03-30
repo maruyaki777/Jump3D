@@ -46,6 +46,7 @@ public class FPSBufferStream<T> {
     }
 
     public void setLastFPS(int fps) {last_input_fps = fps;}
+    public void setLastFPS(float fps) {last_input_fps = Math.round(fps);}
     public void reset() {
         old = source.input();
         latest = old;

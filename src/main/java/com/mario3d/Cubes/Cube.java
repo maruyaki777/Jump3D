@@ -54,7 +54,7 @@ public abstract class Cube implements GameEventListener{
     }
 
     public static void main(String[] args) {
-        Cube c = new Dirt(new WorldPosition(0, -0.5, 0), new WorldPosition(1, 0, 1));
+        Cube c = new Dirt(new WorldPosition(-0.6, -0.6, -1.2), new WorldPosition(0.6, 0.6, 0.0));
         System.out.printf("corners\n");
         for (int i = 0;i < c.corners.length;i++) System.out.printf("{%f, %f, %f}\n", c.corners[i].x, c.corners[i].y, c.corners[i].z);
         System.out.printf("face\n");

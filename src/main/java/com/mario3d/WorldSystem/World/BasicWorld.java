@@ -1,5 +1,6 @@
 package com.mario3d.WorldSystem.World;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import com.mario3d.CubeEntity.CubeEntity;
 import com.mario3d.Cubes.Cube;
 import com.mario3d.Entities.Entity;
+import com.mario3d.Scenes.GameScene;
 import com.mario3d.WorldSystem.WorldChunkPosition;
 import com.mario3d.WorldSystem.WorldPosition;
 
@@ -17,6 +19,9 @@ public class BasicWorld {
     public List<Cube> cubes;
     public List<Entity> entities;
     public List<CubeEntity> cubeentities;
+    
+    public Color skycolor = null;
+    public int world_time = GameScene.default_time;
 
     //インスタンス化は同時に一個まで
     public BasicWorld() {

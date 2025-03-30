@@ -1,5 +1,6 @@
 package com.mario3d.Displays;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.util.texture.Texture;
 import com.mario3d.GameManager;
@@ -26,12 +27,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 //プレイヤーの向いてる方向に合わせるように起点の角度を変える
 public class GameScreen implements Window{
 
-    public WorldPosition playerpos;
-    public WorldPosition playerlook = new WorldPosition(0, 0, 0);
+    public static WorldPosition playerpos;
+    public static WorldPosition playerlook = new WorldPosition(0, 0, 0);
     public static List<Model> models = new CopyOnWriteArrayList<>();
     public static List<ModelDeath> deathmodels = new CopyOnWriteArrayList<>();
     private static Perspective persmode;
     public static double perpos;
+    private static final double PLAYER_LOOK_HEIGHT = 1.5;
 
     public enum Perspective {
         One(0),
@@ -128,7 +130,7 @@ public class GameScreen implements Window{
         }
         GameManager.display.display2D(gl);
         gl.glBegin(GL2.GL_POLYGON);
-        gl.glColor3f(0.33f, 0.87f, 1.0f);
+        gl.glColor3f(temp_World.skycolor.getRed() / 255f, temp_World.skycolor.getGreen() / 255f, temp_World.skycolor.getBlue() / 255f);
         gl.glVertex2f(-1.0f, -1.0f);
         gl.glVertex2f(-1.0f, 1.0f);
         gl.glVertex2f(1.0f, 1.0f);
@@ -137,10 +139,9 @@ public class GameScreen implements Window{
         if (temp_Player.alive && temp_Player.getGoalBoolean() == false) pers = persmode;
         else pers = Perspective.Third1;
         pers.set(gl);
-        WP_fpsbuffer.setLastFPS(GameManager.fps);
+        WP_fpsbuffer.setLastFPS(GameManager.display.getAverageFPS());
         playerpos = WP_fpsbuffer.read();
-        playerpos.y += 1.5;
-        playerlook.x = playerpos.x; playerlook.y = playerpos.y; playerlook.z = playerpos.z;
+        playerlook.x = playerpos.x; playerlook.y = playerpos.y + PLAYER_LOOK_HEIGHT; playerlook.z = playerpos.z;
         Aspect asp;
         if (temp_Player.alive && temp_Player.getGoalBoolean() == false) asp = new Aspect(temp_Player.pasp);
         else {
@@ -159,8 +160,8 @@ public class GameScreen implements Window{
         modelview(gl);
         gl.glDisable(GL2.GL_DEPTH_TEST);
         gl.glDisable(GL2.GL_BLEND);
+        gl.glRotated(-asp.y, Math.cos(Math.toRadians(asp.x)), 0, Math.sin(Math.toRadians(asp.x)));
         gl.glRotated(asp.x, 0, -1, 0);
-        gl.glRotated(asp.y, -1, 0, 0);
     }
 
     private void blockview(GL2 gl, World world) {
@@ -196,12 +197,16 @@ public class GameScreen implements Window{
         t.enable(gl);
         t.bind(gl);
         t.setTexParameterf(gl, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
-        double x2, y2, z2;
+        t.setTexParameteri(gl, GL2.GL_TEXTURE_MIN_FILTER,GL2.GL_NEAREST_MIPMAP_LINEAR);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_S, GL2.GL_REPEAT);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_WRAP_T, GL2.GL_REPEAT);
+        gl.glGenerateMipmap(GL2.GL_TEXTURE_2D);
+        gl.glTexParameterf(GL.GL_TEXTURE_2D, GL2.GL_TEXTURE_LOD_BIAS, 1.0f);
         wp1.x = -playerpos.x;
-        wp1.y = -playerpos.y;
+        wp1.y = -playerpos.y - PLAYER_LOOK_HEIGHT;
         wp1.z = -playerpos.z;
         wp2.x = -playerpos.x;
-        wp2.y = -playerpos.y;
+        wp2.y = -playerpos.y - PLAYER_LOOK_HEIGHT;
         wp2.z = -playerpos.z;
         float wide = (float)sd.texture_wide;
         switch (facenum % 3) {
@@ -210,48 +215,37 @@ public class GameScreen implements Window{
                 if (facenum == 0) x += sd.basepos[0]; else x += sd.basepos[0] + sd.dpos[0];
                 wp1.y += sd.basepos[1]; wp2.y += sd.basepos[1] + sd.dpos[1];
                 wp1.z += sd.basepos[2]; wp2.z += sd.basepos[2] + sd.dpos[2];
-                
-                for (double y = wp1.y;y < wp2.y;y += wide) for (double z = wp1.z;z < wp2.z;z += wide) {
-                    float tx = 1.0f, ty = 1.0f;
-                    if (y+wide < wp2.y) y2 = y+wide; else {y2 = wp2.y; ty = (float)(y2 - y) / wide;}
-                    if (z+wide < wp2.z) z2 = z+wide; else {z2 = wp2.z; tx = (float)(z2 - z) / wide;}
-                    gl.glBegin(GL2.GL_POLYGON);
-                    gl.glColor4f(1f, 1f, 1f, 1f);
-                    gl.glTexCoord2f(0, 0);
-                    gl.glVertex3d(x, y, z);
-                    gl.glTexCoord2f(0, ty);
-                    gl.glVertex3d(x, y2, z);
-                    gl.glTexCoord2f(tx, ty);
-                    gl.glVertex3d(x, y2, z2);
-                    gl.glTexCoord2f(tx, 0);
-                    gl.glVertex3d(x, y, z2);
-                    gl.glEnd();
-                    //System.out.printf("%f  %f  %f  %f  %f\n", pos1.x, y, z, y2, z2);
-                }
+                float ty = (float)((wp2.y - wp1.y) / wide), tx = (float)((wp2.z - wp1.z) / wide);
+                gl.glBegin(GL2.GL_POLYGON);
+                gl.glColor4f(1f, 1f, 1f, 1f);
+                gl.glTexCoord2f(0, 0);
+                gl.glVertex3d(x, wp1.y, wp1.z);
+                gl.glTexCoord2f(0, ty);
+                gl.glVertex3d(x, wp2.y, wp1.z);
+                gl.glTexCoord2f(tx, ty);
+                gl.glVertex3d(x, wp2.y, wp2.z);
+                gl.glTexCoord2f(tx, 0);
+                gl.glVertex3d(x, wp1.y, wp2.z);
+                gl.glEnd();
                 break;
             }
             case 1: {
-                double y = -playerpos.y;
+                double y = -playerpos.y - PLAYER_LOOK_HEIGHT;
                 if (facenum == 1) y += sd.basepos[1]; else y += sd.basepos[1] + sd.dpos[1];
                 wp1.x += sd.basepos[0]; wp2.x += sd.basepos[0] + sd.dpos[0];
                 wp1.z += sd.basepos[2]; wp2.z += sd.basepos[2] + sd.dpos[2];
-
-                for (double x = wp1.x;x < wp2.x;x += wide) for (double z = wp1.z;z < wp2.z;z += wide) {
-                    float tx = 1.0f, ty = 1.0f;
-                    if (x+wide < wp2.x) x2 = x+wide; else {x2 = wp2.x; tx = (float)(x2 - x) / wide;}
-                    if (z+wide < wp2.z) z2 = z+wide; else {z2 = wp2.z; ty = (float)(z2 - z) / wide;}
-                    gl.glBegin(GL2.GL_POLYGON);
-                    gl.glColor4f(1f, 1f, 1f, 1f);
-                    gl.glTexCoord2f(0, 0);
-                    gl.glVertex3d(x, y, z);
-                    gl.glTexCoord2f(0, ty);
-                    gl.glVertex3d(x, y, z2);
-                    gl.glTexCoord2f(tx, ty);
-                    gl.glVertex3d(x2, y, z2);
-                    gl.glTexCoord2f(tx, 0);
-                    gl.glVertex3d(x2, y, z);
-                    gl.glEnd();
-                }
+                float ty = (float)((wp2.z - wp1.z) / wide), tx = (float)((wp2.x - wp1.x) / wide);
+                gl.glBegin(GL2.GL_POLYGON);
+                gl.glColor4f(1f, 1f, 1f, 1f);
+                gl.glTexCoord2f(0, 0);
+                gl.glVertex3d(wp1.x, y, wp1.z);
+                gl.glTexCoord2f(0, ty);
+                gl.glVertex3d(wp1.x, y, wp2.z);
+                gl.glTexCoord2f(tx, ty);
+                gl.glVertex3d(wp2.x, y, wp2.z);
+                gl.glTexCoord2f(tx, 0);
+                gl.glVertex3d(wp2.x, y, wp1.z);
+                gl.glEnd();
                 break;
             }
             case 2: {
@@ -259,22 +253,18 @@ public class GameScreen implements Window{
                 if (facenum == 2) z += sd.basepos[2]; else z += sd.basepos[2] + sd.dpos[2];
                 wp1.x += sd.basepos[0]; wp2.x += sd.basepos[0] + sd.dpos[0];
                 wp1.y += sd.basepos[1]; wp2.y += sd.basepos[1] + sd.dpos[1];
-                for (double x = wp1.x;x < wp2.x;x += wide) for (double y = wp1.y;y < wp2.y;y += wide) {
-                    float tx = 1.0f, ty = 1.0f;
-                    if (x+wide < wp2.x) x2 = x+wide; else {x2 = wp2.x; tx = (float)(x2 - x) / wide;}
-                    if (y+wide < wp2.y) y2 = y+wide; else {y2 = wp2.y; ty = (float)(y2 - y) / wide;}
-                    gl.glBegin(GL2.GL_POLYGON);
-                    gl.glColor4f(1f, 1f, 1f, 1f);
-                    gl.glTexCoord2f(0, 0);
-                    gl.glVertex3d(x, y, z);
-                    gl.glTexCoord2f(0, ty);
-                    gl.glVertex3d(x, y2, z);
-                    gl.glTexCoord2f(tx, ty);
-                    gl.glVertex3d(x2, y2, z);
-                    gl.glTexCoord2f(tx, 0);
-                    gl.glVertex3d(x2, y, z);
-                    gl.glEnd();
-                }
+                float ty = (float)((wp2.y - wp1.y) / wide), tx = (float)((wp2.x - wp1.x) / wide);
+                gl.glBegin(GL2.GL_POLYGON);
+                gl.glColor4f(1f, 1f, 1f, 1f);
+                gl.glTexCoord2f(0, 0);
+                gl.glVertex3d(wp1.x, wp1.y, z);
+                gl.glTexCoord2f(0, ty);
+                gl.glVertex3d(wp1.x, wp2.y, z);
+                gl.glTexCoord2f(tx, ty);
+                gl.glVertex3d(wp2.x, wp2.y, z);
+                gl.glTexCoord2f(tx, 0);
+                gl.glVertex3d(wp2.x, wp1.y, z);
+                gl.glEnd();
                 break;
             }
         }
@@ -286,7 +276,8 @@ public class GameScreen implements Window{
     private float[][] f = new float[4][2];
     private void modelview(GL2 gl) {
         for (Model model : GameScreen.models) {
-            modelview(gl, model, 1, 1, 1, 1);
+        	double[] modelcolor = model.color();
+            modelview(gl, model, modelcolor[0], modelcolor[1], modelcolor[2], 1);
         }
         for (ModelDeath model : GameScreen.deathmodels) {
             modelview(gl, model.getThisModel(), model.red, model.green, model.blue, model.fadeout());
@@ -299,12 +290,13 @@ public class GameScreen implements Window{
         WorldPosition pos = model.setPosition();
         Aspect asp = model.setAspect();
         double ax = asp.x, ay = asp.y;
-        double tx = pos.x - playerpos.x,   ty = pos.y - playerpos.y,   tz = pos.z - playerpos.z;
+        double tx = pos.x - playerpos.x,   ty = pos.y - playerpos.y - PLAYER_LOOK_HEIGHT,   tz = pos.z - playerpos.z;
         int len = model.getCubeCount();
         if (len == 0) return;
         gl.glTranslated(tx, ty, tz);
         gl.glRotated(ax, 0, 1, 0);
-        gl.glRotated(ay, Math.cos(Math.toRadians(ax)), 0, Math.sin(Math.toRadians(ax)));
+        //gl.glRotated(-ay, Math.cos(Math.toRadians(ax)), 0, Math.sin(Math.toRadians(ax)));
+        gl.glRotated(-ay, 1, 0, 0);
         Texture t = model.modelTex();
         int w = t.getWidth(); int h = t.getHeight();
         t.setTexParameterf(gl, GL2.GL_TEXTURE_MAG_FILTER, GL2.GL_NEAREST);
@@ -341,7 +333,8 @@ public class GameScreen implements Window{
             }
         }
         t.disable(gl);
-        gl.glRotated(-ay, Math.cos(Math.toRadians(ax)), 0, Math.sin(Math.toRadians(ax)));
+        //gl.glRotated(ay, Math.cos(Math.toRadians(ax)), 0, Math.sin(Math.toRadians(ax)));
+        gl.glRotated(ay, 1, 0, 0);
         gl.glRotated(ax, 0, -1, 0);
         gl.glTranslated(-tx, -ty, -tz);
     }

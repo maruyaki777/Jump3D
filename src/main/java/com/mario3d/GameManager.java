@@ -20,6 +20,7 @@ public class GameManager {
     public static Scene[] scene_slot = new Scene[] {new TitleScene(), new GameScene(), new DownScene(), new EndCreditsScene()};
     public static final int gameTick = 40;
     public static boolean debug_mode = false;
+    private static boolean error = false;
 
     public static void start() {
         final int slot_num = 0;
@@ -40,27 +41,43 @@ public class GameManager {
     }
 
     public static void main() {
-        int realfps = (int)display.getFPS();
-        if (realfps == 0) fps = 1;
-        else fps = realfps;
-        Scene t = scene.execute();
-        if (t != null) {
-            t.init();
-            if (t instanceof KeyAction) keyaction = (KeyAction)t;
-            else keyaction = null;
-            scene = t;
-        }
-        time += 1;
+    	try {
+	        int realfps = (int)display.getFPS();
+	        if (realfps == 0) fps = 1;
+	        else fps = realfps;
+	        Scene t = scene.execute();
+	        if (t != scene) scene.finish();
+	        if (t != null) {
+	            t.init();
+	            if (t instanceof KeyAction) keyaction = (KeyAction)t;
+	            else keyaction = null;
+	            scene = t;
+	        }
+	        time += 1;
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		GameManager.error(e, GameManager.class);
+    	}
     }
 
     private static long time;
-    public static int fps = Display.inner_fps;
-    public static int realfps = Display.inner_fps;
+    public static int fps = Display.target_fps;
 
     public static long getLatestTick() {return time;}
 
     public static void sysexit() {
         display.animator.stop();
+        display.glWindow.destroy();
         System.exit(0);
+    }
+    
+    public static boolean isGameError() {return error;}
+    public static void error(Exception e, Class<?> c) {
+    	error = true;
+    	display.animator.stop();
+    	display.glWindow.destroy();
+    	GameCrashHandler.displayException(e, c);
+    	System.exit(-1);
     }
 }

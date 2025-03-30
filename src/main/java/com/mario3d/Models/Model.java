@@ -7,6 +7,8 @@ import com.mario3d.WorldSystem.WorldPosition;
 
 public interface Model {
     public static Aspect aspect0 = new Aspect(0, 0);
+    public static final double[] defaultcolor = new double[] {1, 1, 1};
+    public static final double[] defaultdamagecolor = new double[] {1, 0, 0};
     public void init();
 
     //描画対象の座標
@@ -32,4 +34,9 @@ public interface Model {
 
     //座標（そのエンティティの相対座標）[4][3]
     public double[][] nextFacePos();
+    
+    //色 [3]
+    default public double[] color() {
+    	return defaultcolor;
+    }
 }
