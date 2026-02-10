@@ -11,6 +11,8 @@ import java.awt.FontFormatException;
 import java.util.HashSet;
 import java.util.Properties;
 
+import com.mario3d.Profile.ProfileManager;
+
 public class App {
 	
 	public static final String DEFAULT_LANGUAGE = "ja-JP";
@@ -65,6 +67,15 @@ public class App {
         catch (NumberFormatException e) {
         	fps = DEFAULT_FPS;
         }
+        
+        String export_str = settings.getProperty("export", "false");
+        String export_dir_str = settings.getProperty("export.dir", "./exports");
+        boolean export = Boolean.parseBoolean(export_str);
+        File export_dir = null;
+        if (export) export_dir = new File(export_dir_str);
+        
+        ProfileManager.exportDir = export_dir;
+        
         GameManager.language = lang;
         Display.target_fps = fps;
         

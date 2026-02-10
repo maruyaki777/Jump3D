@@ -18,6 +18,8 @@ import com.mario3d.WorldSystem.WorldPosition;
 
 public class ProfileManager {
 	
+	public static File exportDir = null;
+	
 	private static final byte[] keyword = new byte[] {80, 82, 79, 70, 73, 76, 69};
 	private static final String filename = "JUMP3D_SAVEDATA.dat";
 	
@@ -118,13 +120,14 @@ public class ProfileManager {
 	
 	
 	public static void outputResult(Profile profile) {
-		if (profile_file == null) {
+		if (exportDir == null) {
 			return;
 		}
+		if (!exportDir.exists() || !exportDir.isDirectory()) exportDir.mkdirs();
 		Date date = new Date();
 		SimpleDateFormat filesdf = new SimpleDateFormat("YYYY-MM-dd_HH-mm-ss");
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
-		File recordfile = new File(profile_file.getParent(), "record_"+filesdf.format(date)+".txt");
+		File recordfile = new File(exportDir, "record_"+filesdf.format(date)+".txt");
 		try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(recordfile), "utf-8"));) {
 			bw.write("---|| Jump3D Record ||---\n\n");
 			bw.write("Clear Date Time => ");

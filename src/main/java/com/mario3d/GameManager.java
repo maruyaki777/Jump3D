@@ -82,4 +82,5 @@ public class GameManager {
     }
     
     public static String language;
+    public static boolean export_result;
 }
