@@ -1,0 +1,10 @@
+/target/
+/JUMP3D_SAVEDATA.dat
+/JUMP3D_SAVEDATA.dat.bak
+/.project
+/.settings
+/.vscode
+/.git
+/.classpath
+/.LICENSE
+/.README.md
