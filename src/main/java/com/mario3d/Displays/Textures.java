@@ -16,7 +16,7 @@ public class Textures {
         for (int i = 0;i < t;i++) random.nextInt();
         try {
             error_png = TextureIO.newTexture(Textures.class.getResourceAsStream("/assets/textures/misc/old_ground_tex.png"), true, TextureIO.PNG);
-            String[] blocks = new String[] {"ground", "bedrock", "grass", "grass_face", "grass_dirt", "lava", "dirt", "brick"};
+            String[] blocks = new String[] {"ground", "grass", "grass_face", "grass_dirt", "lava", "dirt", "brick"};
             String[] entities = new String[] {"player", "sat", "lift", "messagebox", "daruma", "engineer", "faller", "goal", "turtle", "trapmessagebox", "checkpoint", "maneki", "coinbundle", "fire"};
             String[] miscs = new String[] {"title", "old_ground_tex", "player2D"};
             Textures.Loader.loadTexture(Textures.Block.textures, 0, "block", blocks);
