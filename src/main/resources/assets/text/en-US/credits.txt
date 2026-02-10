@@ -1,0 +1,78 @@
+====================
+- System -
+====================
+
+Maruyaki
+
+
+
+
+====================
+- Texture -
+====================
+
+Maruyaki
+
+
+
+
+====================
+- Font -
+====================
+
+PixelMplus (itouhiro)
+
+
+
+
+====================
+- External Library -
+====================
+
+Java OpenGL
+
+
+
+
+====================
+- Game Design & Production -
+====================
+
+Maruyaki
+
+
+
+
+====================
+- Special Thanks -
+====================
+
+toruwest - JOGLによるOpenGL入門
+
+
+
+
+
+
+
+
+
+Copyright © 2024 Maruyaki. All rights reserved.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Thank you for Playing !!

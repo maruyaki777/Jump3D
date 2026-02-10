@@ -1,0 +1,8 @@
+When you're in midair,
+jumping again will let you perform a double jump.
+By the way, if you do the double jump early,
+you can reach higher places than usual.
+Try it out!
+
+Also, if you press the space bar while stepping on an enemy,
+you'll jump a little higher than if you hadn't pressed it.
