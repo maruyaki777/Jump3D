@@ -1,5 +1,6 @@
 package com.mario3d.CubeEntity;
 
+import com.mario3d.GameManager;
 import com.mario3d.Displays.GameScreen;
 import com.mario3d.Displays.ViewTextScreen;
 import com.mario3d.Events.CollisionEvent;
@@ -38,7 +39,7 @@ public class MessageBox extends CubeEntity{
     private String get(int id) {
         StringBuilder str = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(
-            new InputStreamReader(MessageBox.class.getResourceAsStream("/assets/text/"+String.valueOf(id)+".txt"), "utf-8"));) {
+            new InputStreamReader(MessageBox.class.getResourceAsStream("/assets/text/"+ GameManager.language + "/" + String.valueOf(id)+".txt"), "utf-8"));) {
             String buf = null;
             while ((buf = reader.readLine()) != null) {
                 str.append(buf);

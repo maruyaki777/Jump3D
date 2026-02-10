@@ -1,12 +1,21 @@
 package com.mario3d;
 
 import java.awt.GraphicsEnvironment;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.util.HashSet;
 import java.util.Properties;
 
 public class App {
+	
+	public static final String DEFAULT_LANGUAGE = "ja-JP";
+	public static final int DEFAULT_FPS = 140;
+	
     public static void main(String[] args) {
         //フォント設定
         GraphicsEnvironment ge = null;
@@ -25,6 +34,40 @@ public class App {
         catch (IOException e) {version = "error / Can't load properties file.";}
         catch (NullPointerException e) {version = "error / Can't load properties file.";}
         if (version == null) version = "Jump3D " + prop.getProperty("version");
+        
+        Properties settings = new Properties();
+        File file = new File("./setting.properties");
+        if (file.exists()) {
+        	try (FileInputStream fis = new FileInputStream(file);) {
+        		settings.load(fis);
+        	}
+        	catch (IOException e) {
+        		
+        	}
+        }
+        HashSet<String> langlist = new HashSet<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(App.class.getResourceAsStream("/assets/text/languages.txt"), "utf-8"));) {
+        	String l;
+        	while ((l = reader.readLine()) != null) {
+        		langlist.add(l);
+        	}
+        }
+        catch (IOException e) {
+        	
+        }
+        String lang = settings.getProperty("lang", "ja-JP");
+        String fps_str = settings.getProperty("fps", String.valueOf(DEFAULT_FPS));
+        int fps;
+        if (!langlist.contains(lang)) lang = "ja-JP";
+        try {
+        	fps = Integer.parseInt(fps_str);
+        }
+        catch (NumberFormatException e) {
+        	fps = DEFAULT_FPS;
+        }
+        GameManager.language = lang;
+        Display.target_fps = fps;
+        
         Display d = new Display();
         MouseKeyboard mk = new MouseKeyboard(d.glWindow);
         d.glWindow.addKeyListener(mk);

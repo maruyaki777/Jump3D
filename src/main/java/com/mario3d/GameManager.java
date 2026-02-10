@@ -80,4 +80,6 @@ public class GameManager {
     	GameCrashHandler.displayException(e, c);
     	System.exit(-1);
     }
+    
+    public static String language;
 }

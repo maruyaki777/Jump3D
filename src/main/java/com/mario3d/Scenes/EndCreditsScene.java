@@ -17,7 +17,7 @@ public class EndCreditsScene implements Scene, KeyAction{
         EndCreditScreen.resetscroll();
         String[] credittext;
         List<String> read_text = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(EndCreditsScene.class.getResourceAsStream("/assets/text/credits.txt"), "utf-8"));) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(EndCreditsScene.class.getResourceAsStream("/assets/text/" + GameManager.language + "/credits.txt"), "utf-8"));) {
             String buf;
             while ((buf = reader.readLine()) != null) read_text.add(buf);
             credittext = new String[read_text.size()];
