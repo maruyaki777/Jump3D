@@ -4,8 +4,11 @@ import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.util.HashSet;
@@ -47,6 +50,23 @@ public class App {
         		
         	}
         }
+        
+        //ファイル生成
+        if (file.exists() && file.isFile()) file_creation: {
+        	try {if (Files.size(file.toPath()) > 0) break file_creation;}
+        	catch (IOException e) {break file_creation;}
+        	try (FileOutputStream fos = new FileOutputStream(file);InputStream is = App.class.getResourceAsStream("/default-setting.properties");) {
+        		byte[] bytes = new byte[256];
+        		int len;
+        		while ((len = is.read(bytes)) != -1) {
+        			fos.write(bytes, 0, len);
+        		}
+        	}
+        	catch (IOException e) {
+        		
+        	}
+        }
+        
         HashSet<String> langlist = new HashSet<>();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(App.class.getResourceAsStream("/assets/text/languages.txt"), "utf-8"));) {
         	String l;
