@@ -1,6 +1,7 @@
 package com.mario3d.Entities;
 
 import com.mario3d.Displays.GameScreen;
+import com.mario3d.Entities.Utils.PhysicPort;
 import com.mario3d.Events.CollisionEvent;
 import com.mario3d.Events.GameEvent;
 import com.mario3d.Events.MonsterDamageEvent;
@@ -11,7 +12,7 @@ import com.mario3d.Utils.Collision;
 import com.mario3d.Utils.Physic;
 import com.mario3d.WorldSystem.WorldPosition;
 
-public class Turtle extends Entity{
+public class Turtle extends Entity implements PhysicPort {
     public Turtle(WorldPosition pos) {
         super("turtle", pos);
         super.repulsion = true;
@@ -143,4 +144,7 @@ public class Turtle extends Entity{
             if (mde.level >= 1) kill();
         }
     }
+    
+    @Override
+    public Physic getPhysic() {return physic;}
 }

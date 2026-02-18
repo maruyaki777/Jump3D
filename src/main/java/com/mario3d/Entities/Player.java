@@ -4,6 +4,7 @@ import com.mario3d.GameManager;
 import com.mario3d.MouseKeyboard;
 import com.mario3d.Displays.GameScreen;
 import com.mario3d.Entities.Utils.Aspect;
+import com.mario3d.Entities.Utils.PhysicPort;
 import com.mario3d.Events.GameEvent;
 import com.mario3d.Events.GoalEvent;
 import com.mario3d.Models.ModelPlayer;
@@ -12,7 +13,7 @@ import com.mario3d.Utils.Collision;
 import com.mario3d.Utils.Physic;
 import com.mario3d.WorldSystem.WorldPosition;
 
-public class Player extends Entity{
+public class Player extends Entity implements PhysicPort {
     public Aspect pasp;
     public Physic physic;
     public boolean alive = true;
@@ -148,4 +149,7 @@ public class Player extends Entity{
         }
         else if (event.eventType == GameEvent.EventType.TouchLava) kill();
     }
+    
+    @Override
+    public Physic getPhysic() {return physic;}
 }

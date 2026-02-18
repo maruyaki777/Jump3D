@@ -9,6 +9,7 @@ import com.mario3d.Cubes.Cube;
 import com.mario3d.Entities.Entity;
 import com.mario3d.Events.CollisionEvent;
 import com.mario3d.Events.GameEvent;
+import com.mario3d.Events.SelfCollisionEvent;
 import com.mario3d.Scenes.GameScene;
 import com.mario3d.WorldSystem.RelativePosition;
 import com.mario3d.WorldSystem.WorldChunkPosition;
@@ -255,6 +256,7 @@ public class Collision {
             epos.z - ec.dx <= pos.z + this.dx && epos.z + ec.dx >= pos.z - this.dx) {
             
             GameEvent.add(new CollisionEvent(e, entity, new WorldPosition(pos)));
+            GameEvent.add(new SelfCollisionEvent(entity, e, new WorldPosition(pos)));
         }
     }
 

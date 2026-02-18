@@ -2,6 +2,7 @@ package com.mario3d.Entities;
 
 import com.mario3d.Displays.GameScreen;
 import com.mario3d.Entities.Utils.Aspect;
+import com.mario3d.Entities.Utils.PhysicPort;
 import com.mario3d.Events.CollisionEvent;
 import com.mario3d.Events.GameEvent;
 import com.mario3d.Events.MonsterDamageEvent;
@@ -11,7 +12,7 @@ import com.mario3d.Utils.Collision;
 import com.mario3d.Utils.Physic;
 import com.mario3d.WorldSystem.WorldPosition;
 
-public class CoinBundle extends Entity{
+public class CoinBundle extends Entity implements PhysicPort {
 	
 	private static final double throwforce = 0.06;
 	private static final double kickforce = 0.13;
@@ -121,4 +122,6 @@ public class CoinBundle extends Entity{
 		return kicked;
 	}
 	public int getMode() {return mode;}
+	
+	public Physic getPhysic() {return physic;}
 }

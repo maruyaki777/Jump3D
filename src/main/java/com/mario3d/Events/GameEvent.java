@@ -36,7 +36,8 @@ public abstract class GameEvent {
         TouchLava("TouchLavaEvent"),
         MonsterDamage("MonsterDamageEvent"),
         Kill("KillEvent"),
-    	Signal("SignalEvent");
+    	Signal("SignalEvent"),
+    	SelfCollision("SelfCollisionEvent");
 
         private final String name;
         private EventType(String toString) {this.name = toString;}

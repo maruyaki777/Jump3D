@@ -2,6 +2,7 @@ package com.mario3d.Entities;
 
 import com.mario3d.Displays.GameScreen;
 import com.mario3d.Entities.Utils.Aspect;
+import com.mario3d.Entities.Utils.PhysicPort;
 import com.mario3d.Events.CollisionEvent;
 import com.mario3d.Events.GameEvent;
 import com.mario3d.Events.MonsterDamageEvent;
@@ -11,7 +12,7 @@ import com.mario3d.Utils.Collision;
 import com.mario3d.Utils.Physic;
 import com.mario3d.WorldSystem.WorldPosition;
 
-public class Engineer extends Entity{
+public class Engineer extends Entity implements PhysicPort {
     public Engineer(WorldPosition pos) {
         super("engineer", pos);
         super.model = new ModelEngineer(this);
@@ -86,4 +87,7 @@ public class Engineer extends Entity{
         if (Math.abs(movedegree) < d) aspect.set(degree, aspect.y);
         else aspect.add(unit * d, 0);
     }
+    
+    @Override
+    public Physic getPhysic() {return physic;}
 }
