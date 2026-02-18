@@ -68,6 +68,8 @@ public class App {
         	fps = DEFAULT_FPS;
         }
         
+        GameManager.display_report = Boolean.parseBoolean(settings.getProperty("display-report", "false"));
+        
         String export_str = settings.getProperty("export", "false");
         String export_dir_str = settings.getProperty("export.dir", "./exports");
         boolean export = Boolean.parseBoolean(export_str);

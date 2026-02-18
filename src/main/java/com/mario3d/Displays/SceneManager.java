@@ -14,6 +14,7 @@ public class SceneManager {
     private static Window[] titleWindows = new Window[] {new TitleScreen(), debugWindow};
     private static Window[] downWindows = new Window[] {new DownScreen(), debugWindow};
     private static Window[] endcredits = new Window[] {new EndCreditScreen(), debugWindow};
+    private static Window[] reportWindows = new Window[] {new EndReportScreen(), debugWindow};
     private static Window[] slots;
     private static Scene lastScene = null;
 
@@ -28,6 +29,7 @@ public class SceneManager {
         else if (GameManager.scene instanceof TitleScene) slots = titleWindows;
         else if (GameManager.scene instanceof DownScene) slots = downWindows;
         else if (GameManager.scene instanceof EndCreditsScene) slots = endcredits;
+        else if (GameManager.scene instanceof EndReportScene) slots = reportWindows;
         else return;
         lastScene = GameManager.scene;
         for (int i = 0;i < slots.length;i++) {

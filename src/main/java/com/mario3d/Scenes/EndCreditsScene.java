@@ -31,12 +31,12 @@ public class EndCreditsScene implements Scene, KeyAction{
 
     @Override
     public Scene execute() {
-        if (EndCreditScreen.finished) nextScene = GameManager.scene_slot[0];
+        if (EndCreditScreen.finished) nextScene = (GameManager.display_report) ? GameManager.scene_slot[4] : GameManager.scene_slot[0];
         return nextScene;
     }
 
     @Override
     public void onKey(short KeyCode) {
-        if (KeyCode == KeyEvent.VK_ESCAPE) nextScene = GameManager.scene_slot[0];
+        if (KeyCode == KeyEvent.VK_ESCAPE) nextScene = (GameManager.display_report) ? GameManager.scene_slot[4] : GameManager.scene_slot[0];
     }
 }
