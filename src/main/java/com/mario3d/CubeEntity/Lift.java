@@ -55,17 +55,14 @@ public class Lift extends CubeEntity{
     public void onEvent(GameEvent event) {
     	Entity ceentity = null;
     	if (event.eventType == GameEvent.EventType.Collision) {
-    		System.out.println("aaaaa");
     		CollisionEvent ce = (CollisionEvent) event;
     		ceentity = ce.entity;
     	}
     	else if (event.eventType == GameEvent.EventType.SelfCollision) {
-    		System.out.println("bbbbb");
     		SelfCollisionEvent sce = (SelfCollisionEvent) event;
     		ceentity = sce.entity;
     	}
     	if (ceentity instanceof PhysicPort) collision: {
-    		System.out.println("ccc");
 			WorldPosition epos = ceentity.pos;
 			if (epos.y >= pos.y) break collision;
 			Collision cecollision = ceentity.collision;
@@ -73,17 +70,12 @@ public class Lift extends CubeEntity{
 			double xdivide = Math.abs(pos.x - epos.x);
 			double zdivide = Math.abs(pos.z - epos.z);
 			double dv = 1 + cecollision.dx;
-			int unit = (speed == 0) ? 0 : (speed < 0) ? -1 : 1;
 			if (xdivide <= dv || zdivide <= dv) {
 				if (xdivide > zdivide) {
-					//cephysic.addForce(speed * vector[0] + speed * Math.abs(dv - xdivide) * 3 - cephysic.speed[0], 0, 0);
-					cephysic.speed[0] = speed * vector[0];
-					//ceentity.pos.x += unit * Math.abs(dv - xdivide);
+					if ((cephysic.speed[0] - speed * vector[0]) * speed * vector[0] < 0) cephysic.speed[0] = speed * vector[0];
 				}
 				else {
-					//cephysic.addForce(0, 0, speed * vector[2] + speed * Math.abs(dv - zdivide) * 3 - cephysic.speed[2]);
-					cephysic.speed[2] = speed * vector[2] + unit * Math.abs(dv - zdivide);
-					//ceentity.pos.z += unit * Math.abs(dv - zdivide);
+					if ((cephysic.speed[2] - speed * vector[2]) * speed * vector[2] < 0) cephysic.speed[2] = speed * vector[2];
 				}
 			}
 		}
