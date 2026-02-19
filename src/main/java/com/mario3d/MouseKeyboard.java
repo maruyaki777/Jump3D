@@ -28,6 +28,7 @@ public class MouseKeyboard implements MouseListener, KeyListener{
                 case KeyEvent.VK_S: {K_s = true;break;}
                 case KeyEvent.VK_D: {K_d = true;break;}
                 case KeyEvent.VK_SPACE: {K_space = true;break;}
+                case KeyEvent.VK_F3: {GameManager.debug_mode = !GameManager.debug_mode;break;}
                 case KeyEvent.VK_F11: {glWindow.setFullscreen(!glWindow.isFullscreen());break;}
                 case KeyEvent.VK_F12: {GameManager.sysexit();break;}
             }
