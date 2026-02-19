@@ -123,7 +123,7 @@ public class GameScene implements Scene, KeyAction{
     public static void clearCurrentCourse() {
         if (nextscene == null) profile.courseid++;
         if (CourseSelector.existWorld(profile.courseid)) nextscene = GameManager.scene_slot[2];
-        else {nextscene = GameManager.scene_slot[3];GameManager.mk.dounlock();ProfileManager.outputResult(profile);ProfileManager.reset();GameScene.need_reset = true;}
+        else {EndCreditsScene.setReportStatus(true);nextscene = GameManager.scene_slot[3];GameManager.mk.dounlock();ProfileManager.outputResult(profile);ProfileManager.reset();GameScene.need_reset = true;}
         profile.checkpoint = null;
     }
     public static void setCheckPoint(WorldPosition pos, int priority) {

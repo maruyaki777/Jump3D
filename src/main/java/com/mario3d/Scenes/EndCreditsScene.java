@@ -28,15 +28,20 @@ public class EndCreditsScene implements Scene, KeyAction{
     }
 
     private static Scene nextScene;
+    private static boolean endgame = true;
+    
+    public static void setReportStatus(boolean bool) {
+    	endgame = bool;
+    }
 
     @Override
     public Scene execute() {
-        if (EndCreditScreen.finished) nextScene = (GameManager.display_report) ? GameManager.scene_slot[4] : GameManager.scene_slot[0];
+        if (EndCreditScreen.finished) nextScene = (GameManager.display_report && endgame) ? GameManager.scene_slot[4] : GameManager.scene_slot[0];
         return nextScene;
     }
 
     @Override
     public void onKey(short KeyCode) {
-        if (KeyCode == KeyEvent.VK_ESCAPE) nextScene = (GameManager.display_report) ? GameManager.scene_slot[4] : GameManager.scene_slot[0];
+        if (KeyCode == KeyEvent.VK_ESCAPE) nextScene = (GameManager.display_report && endgame) ? GameManager.scene_slot[4] : GameManager.scene_slot[0];
     }
 }

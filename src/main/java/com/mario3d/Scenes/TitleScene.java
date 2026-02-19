@@ -32,6 +32,7 @@ public class TitleScene implements Scene, KeyAction{
                 break;
             }
             case KeyEvent.VK_0: {
+            	EndCreditsScene.setReportStatus(false);
                 next = GameManager.scene_slot[3];
                 break;
             }
