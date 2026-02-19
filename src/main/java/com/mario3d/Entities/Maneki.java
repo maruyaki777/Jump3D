@@ -6,6 +6,7 @@ import java.util.Random;
 import com.mario3d.GameManager;
 import com.mario3d.Displays.GameScreen;
 import com.mario3d.Entities.Utils.Aspect;
+import com.mario3d.Entities.Utils.PhysicPort;
 import com.mario3d.Events.CollisionEvent;
 import com.mario3d.Events.GameEvent;
 import com.mario3d.Events.MonsterDamageEvent;
@@ -17,7 +18,7 @@ import com.mario3d.Utils.Physic;
 import com.mario3d.WorldSystem.WorldPosition;
 
 //ボス
-public class Maneki extends Entity{
+public class Maneki extends Entity implements PhysicPort {
 	private static final int drop_coin_interval = 4;
 	private int hp;
 	public Physic physic;
@@ -363,6 +364,9 @@ public class Maneki extends Entity{
 	
 	public int getHP() {return hp;}
 	public boolean isDied() {return hp <= 0;}
+	
+	@Override
+    public Physic getPhysic() {return physic;}
 }
 
 interface NewEntity {

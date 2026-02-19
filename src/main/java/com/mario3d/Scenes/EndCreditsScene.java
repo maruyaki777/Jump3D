@@ -17,7 +17,7 @@ public class EndCreditsScene implements Scene, KeyAction{
         EndCreditScreen.resetscroll();
         String[] credittext;
         List<String> read_text = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(EndCreditsScene.class.getResourceAsStream("/assets/text/credits.txt"), "utf-8"));) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(EndCreditsScene.class.getResourceAsStream("/assets/text/" + GameManager.language + "/credits.txt"), "utf-8"));) {
             String buf;
             while ((buf = reader.readLine()) != null) read_text.add(buf);
             credittext = new String[read_text.size()];
@@ -31,12 +31,12 @@ public class EndCreditsScene implements Scene, KeyAction{
 
     @Override
     public Scene execute() {
-        if (EndCreditScreen.finished) nextScene = GameManager.scene_slot[0];
+        if (EndCreditScreen.finished) nextScene = (GameManager.display_report) ? GameManager.scene_slot[4] : GameManager.scene_slot[0];
         return nextScene;
     }
 
     @Override
     public void onKey(short KeyCode) {
-        if (KeyCode == KeyEvent.VK_ESCAPE) nextScene = GameManager.scene_slot[0];
+        if (KeyCode == KeyEvent.VK_ESCAPE) nextScene = (GameManager.display_report) ? GameManager.scene_slot[4] : GameManager.scene_slot[0];
     }
 }

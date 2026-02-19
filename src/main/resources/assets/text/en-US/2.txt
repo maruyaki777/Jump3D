@@ -1,0 +1,7 @@
+Look at that cat over there!
+Isn't it cute? It's the very first enemy I ever made.
+When I created this cat, the process wasn't optimized yet,
+so it took over an hour to make.
+
+By the way, that cat jumps along with the player when they jump,
+so watch out! ;)

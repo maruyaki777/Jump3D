@@ -4,6 +4,7 @@ import java.util.TimerTask;
 
 import com.mario3d.Scenes.DownScene;
 import com.mario3d.Scenes.EndCreditsScene;
+import com.mario3d.Scenes.EndReportScene;
 import com.mario3d.Scenes.GameScene;
 import com.mario3d.Scenes.Scene;
 import com.mario3d.Scenes.KeyAction;
@@ -17,7 +18,7 @@ public class GameManager {
     public static Display display = null;
     public static Scene scene;
     public static KeyAction keyaction;
-    public static Scene[] scene_slot = new Scene[] {new TitleScene(), new GameScene(), new DownScene(), new EndCreditsScene()};
+    public static Scene[] scene_slot = new Scene[] {new TitleScene(), new GameScene(), new DownScene(), new EndCreditsScene(), new EndReportScene()};
     public static final int gameTick = 40;
     public static boolean debug_mode = false;
     private static boolean error = false;
@@ -80,4 +81,8 @@ public class GameManager {
     	GameCrashHandler.displayException(e, c);
     	System.exit(-1);
     }
+    
+    public static String language;
+    public static boolean export_result;
+    public static boolean display_report;
 }

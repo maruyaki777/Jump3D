@@ -1,12 +1,26 @@
 package com.mario3d;
 
 import java.awt.GraphicsEnvironment;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.util.HashSet;
 import java.util.Properties;
 
+import com.mario3d.Profile.ProfileManager;
+
 public class App {
+	
+	public static final String DEFAULT_LANGUAGE = "ja-JP";
+	public static final int DEFAULT_FPS = 140;
+	
     public static void main(String[] args) {
         //フォント設定
         GraphicsEnvironment ge = null;
@@ -25,6 +39,68 @@ public class App {
         catch (IOException e) {version = "error / Can't load properties file.";}
         catch (NullPointerException e) {version = "error / Can't load properties file.";}
         if (version == null) version = "Jump3D " + prop.getProperty("version");
+        
+        Properties settings = new Properties();
+        File file = new File("./setting.properties");
+        if (file.exists()) {
+        	try (FileInputStream fis = new FileInputStream(file);) {
+        		settings.load(fis);
+        	}
+        	catch (IOException e) {
+        		
+        	}
+        }
+        
+        //ファイル生成
+        if (file.exists() && file.isFile()) file_creation: {
+        	try {if (Files.size(file.toPath()) > 0) break file_creation;}
+        	catch (IOException e) {break file_creation;}
+        	try (FileOutputStream fos = new FileOutputStream(file);InputStream is = App.class.getResourceAsStream("/default-setting.properties");) {
+        		byte[] bytes = new byte[256];
+        		int len;
+        		while ((len = is.read(bytes)) != -1) {
+        			fos.write(bytes, 0, len);
+        		}
+        	}
+        	catch (IOException e) {
+        		
+        	}
+        }
+        
+        HashSet<String> langlist = new HashSet<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(App.class.getResourceAsStream("/assets/text/languages.txt"), "utf-8"));) {
+        	String l;
+        	while ((l = reader.readLine()) != null) {
+        		langlist.add(l);
+        	}
+        }
+        catch (IOException e) {
+        	
+        }
+        String lang = settings.getProperty("lang", "ja-JP");
+        String fps_str = settings.getProperty("fps", String.valueOf(DEFAULT_FPS));
+        int fps;
+        if (!langlist.contains(lang)) lang = "ja-JP";
+        try {
+        	fps = Integer.parseInt(fps_str);
+        }
+        catch (NumberFormatException e) {
+        	fps = DEFAULT_FPS;
+        }
+        
+        GameManager.display_report = Boolean.parseBoolean(settings.getProperty("display-report", "false"));
+        
+        String export_str = settings.getProperty("export", "false");
+        String export_dir_str = settings.getProperty("export.dir", "./exports");
+        boolean export = Boolean.parseBoolean(export_str);
+        File export_dir = null;
+        if (export) export_dir = new File(export_dir_str);
+        
+        ProfileManager.exportDir = export_dir;
+        
+        GameManager.language = lang;
+        Display.target_fps = fps;
+        
         Display d = new Display();
         MouseKeyboard mk = new MouseKeyboard(d.glWindow);
         d.glWindow.addKeyListener(mk);

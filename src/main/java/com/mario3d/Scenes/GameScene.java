@@ -115,6 +115,7 @@ public class GameScene implements Scene, KeyAction{
     public static int getTime() {return time;}
     public static void resetCourseid() {profile.courseid = 0;profile.checkpoint = null;}
     public static int getCourseid() {return profile.courseid;}
+    public static long getPlayTime() {return profile.timeplayed;}
     public static void resetProfile() {
     	profile = ProfileManager.load();
     	if (profile == null) profile = new Profile(default_Remaining, 0);

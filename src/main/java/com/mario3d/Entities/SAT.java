@@ -2,6 +2,7 @@ package com.mario3d.Entities;
 
 import com.mario3d.GameManager;
 import com.mario3d.Displays.GameScreen;
+import com.mario3d.Entities.Utils.PhysicPort;
 import com.mario3d.Events.CollisionEvent;
 import com.mario3d.Events.GameEvent;
 import com.mario3d.Events.MonsterDamageEvent;
@@ -11,7 +12,7 @@ import com.mario3d.Utils.Collision;
 import com.mario3d.Utils.Physic;
 import com.mario3d.WorldSystem.WorldPosition;
 
-public class SAT extends Entity{
+public class SAT extends Entity implements PhysicPort {
 
     Physic physic;
     
@@ -77,4 +78,7 @@ public class SAT extends Entity{
         if (GameManager.mk.getKeyStateVK_Space() && !old_space && collision.touch[1]) physic.addForce(0, 0.3, 0);
         old_space = GameManager.mk.getKeyStateVK_Space();
     }
+    
+    @Override
+    public Physic getPhysic() {return physic;}
 }

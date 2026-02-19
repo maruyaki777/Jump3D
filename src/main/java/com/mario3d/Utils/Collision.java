@@ -9,6 +9,7 @@ import com.mario3d.Cubes.Cube;
 import com.mario3d.Entities.Entity;
 import com.mario3d.Events.CollisionEvent;
 import com.mario3d.Events.GameEvent;
+import com.mario3d.Events.SelfCollisionEvent;
 import com.mario3d.Scenes.GameScene;
 import com.mario3d.WorldSystem.RelativePosition;
 import com.mario3d.WorldSystem.WorldChunkPosition;
@@ -71,7 +72,7 @@ public class Collision {
                 if ((rp.y - t.y) * get1(vec[1]) > 0) rp.y = t.y;
                 if ((rp.z - t.z) * get1(vec[2]) > 0) rp.z = t.z;
             }
-            else withEntity(e, from);;
+            else withEntity(e, from);
         }
         if (Math.abs(rp_un.x) < Math.abs(rp.x) && Math.abs(rp_un.z) < Math.abs(rp.z)) rp = rp_un;
         WorldPosition resultpos = rp.getAbsolutePos(from);
@@ -103,15 +104,7 @@ public class Collision {
         if (r >= 3) return true;
         return false;
     }
-/* 
-    private boolean inrangeXZ(WorldPosition target, Cube c) {
-        int r = 0;
-        if (c.BasePos.x < target.x + dx && target.x - dx < c.BasePos.x + c.dx) r++;
-        if (c.BasePos.z < target.z + dx && target.z - dx < c.BasePos.z + c.dz) r++;
-        if (r >= 2) return true;
-        return false;
-    }
-*/
+    
     private boolean inrangeXYZ(WorldPosition target, Cube c, int ignorevec) {
         int r = 0;
         if (ignorevec != 0 && c.BasePos.x < target.x + dx && target.x - dx < c.BasePos.x + c.dx) r++;
@@ -162,7 +155,6 @@ public class Collision {
                 }
                 slot = 0;
             }
-            else if (to.y - 0.1 - cube.corners[cube.face[4][0]].y <= 0 && to.y + dy - cube.corners[cube.face[4][0]].y > 0) {touch[1] = true;collided = true;}
             //z
             if (zv != 0) {
                 if (zv < 0) slot = 3;
@@ -227,7 +219,6 @@ public class Collision {
                 }
                 slot = 0;
             }
-            else if (to.y - 0.1 - (cube.corners[cube.face[4][0]].y + cube.pos.y) <= 0 && to.y + dy - (cube.corners[cube.face[4][0]].y + cube.pos.y) > 0) {touch[1] = true;}
             //z
             if (zv != 0) {
                 if (zv < 0) slot = 3;
@@ -255,6 +246,7 @@ public class Collision {
             epos.z - ec.dx <= pos.z + this.dx && epos.z + ec.dx >= pos.z - this.dx) {
             
             GameEvent.add(new CollisionEvent(e, entity, new WorldPosition(pos)));
+            GameEvent.add(new SelfCollisionEvent(entity, e, new WorldPosition(pos)));
         }
     }
 
